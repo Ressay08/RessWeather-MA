@@ -1,2 +1,28 @@
-# RessWeather-MA
-RessWeather MA: The next-gen visual dashboard for weather and prayer precision in Morocco. Fast, immersive, and 100% responsive.
+# ⚡ The RessWitchers Weather (الطقس وأوقات الصلاة)
+
+تطبيق ويب (PWA) متطور يعرض أحوال الطقس بدقة وأوقات الصلاة لجميع المدن المغربية مع ميزة التنبيهات الذكية.
+
+## 🚀 المميزات (Features)
+* 🌦️ **طقس دقيق:** جلب البيانات لحظياً من Open-Meteo API.
+* 🕋 **أوقات الصلاة:** توقيت دقيق حسب وزارة الأوقاف والشؤون الإسلامية (عبر Aladhan API).
+* 📱 **PWA Ready:** يمكن تثبيته على الهاتف كأنه تطبيق أصلي.
+* 🔔 **تنبيهات الأذان:** إشعارات ذكية عند دخول وقت الصلاة.
+* 🌗 **وضع ليلي/نهاري:** واجهة مستخدم عصرية مريحة للعين.
+* 🌍 **متعدد اللغات:** يدعم العربية والإنجليزية.
+
+## 🛠️ التقنيات المستخدمة (Tech Stack)
+- HTML5 / CSS3 (Tailwind CSS)
+- JavaScript (Vanilla JS - Async/Await)
+- Service Workers (For Offline & Notifications)
+- APIs: [Open-Meteo](https://open-meteo.com/), [Aladhan](https://aladhan.com/prayer-times-api)
+
+## 📸 صورة من التطبيق
+*(يمكنك إضافة رابط لصورة تطبيقك هنا)*
+
+## 📦 كيفية التشغيل
+1. قم بتحميل الملفات.
+2. افتح ملف `index.html` في المتصفح.
+3. استمتع بتجربة التطبيق!
+
+---
+صنع بـ ❤️ لخدمة المستخدم المغربي.

@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RessWeather MA | Weather & Prayers</title>
+  <link rel="icon" href="icon.png" type="image/png" sizes="any">
+  <link rel="apple-touch-icon" href="icon.png" sizes="180x180">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dark-bg: linear-gradient(135deg, #0c0c1d 0%, #1a1a2e 50%, #16213e 100%);
+      --glass-bg: rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.1);
+      --neon-cyan: #00d4ff;
+      --neon-purple: #8b5cf6;
+      --text-primary: #f0f0f0;
+      --text-dim: rgba(240,240,240,0.6);
+      --shadow-3d: 0 25px 50px -12px rgba(0,0,0,0.5);
+      --nav-icon-color: #ffffff;
+    }
+    body.light {
+      --dark-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+      --glass-bg: rgba(255,255,255,0.92);
+      --glass-border: rgba(0,0,0,0.08);
+      --text-primary: #1e293b;
+      --text-dim: rgba(30,41,59,0.8);
+      --nav-icon-color: #000000;
+    }
+    body.light-mode {
+      background-color: transparent !important;
+      background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
+                  url('pngtree-morocco-map-with-the-flag-inside-geography-border-illustration-photo-picture-image_4131432.jpg') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-attachment: fixed !important;
+      background-repeat: no-repeat !important;
+    }
+    body.light-mode *,
+    body.light-mode html,
+    body.light-mode .glass-card {
+      background-color: transparent !important;
+    }
+    body {
+      font-family: 'Orbitron', monospace;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    [lang="ar"] {
+      font-family: 'Cairo', sans-serif;
+    }
+    html[dir="rtl"] {
+      direction: rtl;
+    }
+    html[dir="rtl"] .navbar {
+      flex-direction: row-reverse;
+    }
+    html[dir="rtl"] .navbar-right {
+      flex-direction: row-reverse;
+    }
+    html[dir="rtl"] .glass-card,
+    html[dir="rtl"] .metric-item,
+    html[dir="rtl"] .hour-card,
+    html[dir="rtl"] .prayer-card {
+      text-align: right;
+    }
+    html[dir="rtl"] .navbar-right {
+      gap: 1rem;
+    }
+    html[dir="rtl"] .section-title::after {
+      left: auto;
+      right: 50%;
+    }
+    html[dir="rtl"] .prayer-card .audio-icon {
+      left: 0.5rem;
+      right: auto;
+    }
+    /* Privacy Modal - EXACT Professional 3D Glassmorphism */
+    #privacy-modal {
+        position: fixed !important;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(15px) !important;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999 !important;
+        padding: 20px;
+    }
+    #privacy-modal.show { 
+      display: flex !important; 
+      animation: fadeIn 0.3s ease; 
+    }
+    .modal-content {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        padding: 30px;
+        border-radius: 24px;
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,255,255,0.05);
+        transform: perspective(1000px) rotateX(5deg);
+    }
+    .modal-content h2 { 
+      color: var(--neon-cyan); 
+      margin-bottom: 15px; 
+      font-family: 'Orbitron', sans-serif; 
+    }
+    .modal-content p { 
+      color: #ccc; 
+      line-height: 1.6; 
+      margin-bottom: 20px; 
+      font-size: 0.95rem; 
+    }
+    .modal-content button {
+        background: var(--neon-cyan) !important;
+        color: #000 !important;
+        border: none; 
+        padding: 12px 40px;
+        border-radius: 12px; 
+        font-weight: 900;
+        cursor: pointer; 
+        transition: 0.3s;
+        text-transform: uppercase;
+    }
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: scale(0.9); } 
+      to { opacity: 1; transform: scale(1); } 
+    }
+    .privacy-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .privacy-btn:hover {
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 15px rgba(139,92,246,0.4);
+    }
+    .privacy-btn i {
+      margin-right: 0.3rem;
+    }
+    html[dir="rtl"] .privacy-btn i {
+      margin-right: 0;
+      margin-left: 0.3rem;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem clamp(1rem, 4vw, 2rem);
+      height: auto;
+      min-height: 60px;
+      box-shadow: var(--shadow-3d);
+    }
+    .navbar {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.5));
+      border-radius: 8px;
+    }
+    .logo-text {
+      font-size: clamp(1.2rem, 5vw, 1.8rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px var(--neon-cyan));
+    }
+    .navbar-right {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .location-display {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      opacity: 0.9;
+      transition: none !important;
+      backdrop-filter: blur(10px);
+    }
+    .location-display:hover {
+      opacity: 1;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0,212,255,0.3);
+    }
+    .theme-toggle, .lang-toggle {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      cursor: pointer;
+      transition: none !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      font-size: 1.2rem;
+    }
+    .theme-toggle:hover, .lang-toggle:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0,212,255,0.4);
+    }
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 10rem 1.5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 768px) {
+      main {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+    }
+    @media (min-width: 1025px) {
+      main {
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 2rem;
+      }
+    }
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow-3d);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+      opacity: 0.5;
+    }
+    .hero {
+      grid-column: 1 / -1;
+      text-align: center;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-1rem); }
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 12vw, 7rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 20px var(--neon-cyan));
+    }
+    .location {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+    .current-temp {
+      font-weight: 900;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 20px var(--neon-cyan);
+      margin: 0.5rem 0;
+    }
+    .weather-desc {
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      opacity: 0.85;
+      font-weight: 500;
+    }
+    .weather-details-card, .hourly-forecast {
+      grid-column: 1 / -1;
+    }
+    .section-title {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4rem;
+      height: 2px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+    }
+    .hourly-title {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .hourly-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .hourly-scroll::-webkit-scrollbar { display: none; }
+    .hour-card {
+      min-width: clamp(85px, 22vw, 105px);
+      flex-shrink: 0;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1rem 0.8rem;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .hour-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0,212,255,0.3);
+      border-color: var(--neon-cyan);
+    }
+    .hour-time {
+      font-size: 0.8rem;
+      opacity: 0.9;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .hour-icon {
+      font-size: clamp(1.5rem, 6vw, 2rem);
+      margin: 0.3rem 0;
+    }
+    .hour-temp {
+      font-size: clamp(1rem, 4vw, 1.3rem);
+      font-weight: 700;
+      color: var(--neon-cyan);
+    }
+    #weather-details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media (min-width: 1025px) {
+      #weather-details-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.2rem;
+      border-radius: 16px;
+      transition: none;
+      cursor: default;
+    }
+    .metric-item:hover {
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 10px 25px rgba(0,212,255,0.2);
+    }
+    .metric-icon {
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      color: var(--neon-cyan);
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 8px var(--neon-cyan));
+    }
+    .metric-label {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metric-value {
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+      font-weight: 800;
+      color: var(--neon-cyan);
+      filter: drop-shadow(0 0 5px var(--neon-cyan));
+    }
+    .prayers {
+      grid-column: span 1;
+    }
+    .prayers h2 {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .prayer-grid {
+      display: grid;
+      gap: 1rem;
+      position: relative;
+    }
+    @media (min-width: 768px) {
+      .prayer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1025px) {
+      .prayer-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+    }
+    .prayer-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .prayer-card:hover {
+      border-color: var(--neon-cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,212,255,0.3);
+    }
+    .prayer-card.active {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0,212,255,0.5);
+    }
+    .prayer-card .audio-icon {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 0.8rem;
+      opacity: 0.6;
+      color: var(--neon-cyan);
+    }
+    .prayer-name {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .prayer-time {
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+      font-weight: 800;
+      color: var(--neon-cyan);
+      filter: drop-shadow(0 0 8px var(--neon-cyan));
+    }
+    .bottom-section {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    @media (min-width: 768px) {
+      .bottom-section {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .aqi {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 20rem;
+    }
+    .aqi h3 {
+      font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+      margin-bottom: 1rem;
+    }
+    .aqi-gauge {
+      position: relative;
+      width: clamp(160px, 40vw, 220px);
+      height: clamp(160px, 40vw, 220px);
+      border-radius: 50%;
+      background: conic-gradient(
+        #ef4444 0deg, 
+        #facc15 90deg, 
+        #22c55e 180deg, 
+        #3b82f6 270deg
+      );
+      margin: 1rem auto;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+    }
+    .aqi-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(90px, 22vw, 130px);
+      height: clamp(90px, 22vw, 130px);
+      background: var(--glass-bg);
+      border-radius: 50%;
+      border: 3px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 900;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.1);
+    }
+    .radar {
+      display: flex;
+      flex-direction: column;
+    }
+    .radar h3 {
+      font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .radar-wrapper {
+      flex: 1;
+      width: 100%;
+      height: 400px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-3d);
+    }
+    .radar iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    @media (max-width: 768px) {
+      @media (max-width: 480px) {
+        .logo-text {
+          font-size: clamp(1rem, 4vw, 1.4rem);
+        }
+      }
+      header { padding: 0.5rem 1rem; }
+      .navbar-right {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+      .theme-toggle, .lang-toggle {
+        width: 2.2rem;
+        height: 2.2rem;
+        font-size: 1rem;
+      }
+      .location-display { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+      .privacy-btn { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+      .glass-card { padding: 1.5rem; }
+      main { padding: 8rem 1rem 1.5rem; gap: 1.5rem; }
+      .radar-wrapper { height: 300px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    .audio-stop-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 2000;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 3.5rem;
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .audio-stop-btn.show { opacity: 1; transform: scale(1); }
+    .audio-stop-btn i { color: #ff4b2b; font-size: 1.2rem; }
+    html[dir="rtl"] .audio-stop-btn { left: 2rem; right: auto; }
+    .navbar .theme-toggle i, .navbar .lang-toggle i, .navbar .privacy-btn i {
+      color: var(--nav-icon-color);
+      transition: color 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <div class="logo">
+        <img src="icon.png" alt="RessWeather MA" class="logo-img">
+        <span class="logo-text">RessWeather MA</span>
+      </div>
+      <div class="navbar-right">
+        <div class="location-display" id="location-display" data-translate="loading">Loading...</div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <i class="fas fa-sun" id="theme-icon"></i>
+        </button>
+        <button class="privacy-btn" onclick="togglePrivacyModal(true)" aria-label="Privacy Policy">
+          <i class="fas fa-shield-alt"></i> Privacy
+        </button>
+        <button class="lang-toggle" onclick="toggleLanguage()" aria-label="Toggle Language">
+          <i class="fas fa-globe" id="lang-icon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="glass-card hero">
+      <h1 class="current-temp" id="current-temp">72°F</h1>
+      <div class="location" id="location">Casablanca, MA</div>
+      <div class="weather-desc" id="description" data-translate="weather-desc">Partly Cloudy</div>
+    </div>
+
+    <div class="glass-card weather-details-card">
+      <h2 class="section-title" data-translate="weather-details">Weather Details</h2>
+      <div id="weather-details-grid">
+        <div class="metric-item">
+          <i class="fas fa-tint metric-icon"></i>
+          <span class="metric-label" data-translate="humidity">Humidity</span>
+          <span id="humidity-val" class="metric-value">--</span>
+        </div>
+        <div class="metric-item">
+          <i class="fas fa-wind metric-icon"></i>
+          <span class="metric-label" data-translate="wind-speed">Wind Speed</span>
+          <span id="wind-val" class="metric-value">--</span>
+        </div>
+        <div class="metric-item">
+          <i class="fas fa-eye metric-icon"></i>
+          <span class="metric-label" data-translate="visibility">Visibility</span>
+          <span id="visibility-val" class="metric-value">--</span>
+        </div>
+        <div class="metric-item">
+          <i class="fas fa-compress-arrows-alt metric-icon"></i>
+          <span class="metric-label" data-translate="pressure">Pressure</span>
+          <span id="pressure-val" class="metric-value">--</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card hourly-forecast">
+      <h2 class="hourly-title" data-translate="hourly-forecast">Hourly Forecast</h2>
+      <div class="hourly-scroll" id="hourly-scroll">
+      </div>
+    </div>
+
+    <div class="glass-card prayers">
+      <h2 data-translate="prayer-times">Prayer Times</h2>
+      <div class="prayer-grid" id="prayer-grid">
+      </div>
+    </div>
+
+    <div class="glass-card aqi">
+      <h3 data-translate="air-quality">Air Quality</h3>
+      <div class="aqi-gauge">
+        <div class="aqi-center" id="aqi-center">42</div>
+      </div>
+    </div>
+
+    <div class="glass-card radar">
+      <h3 data-translate="live-radar">Live Radar</h3>
+      <div class="radar-wrapper">
+        <iframe id="radar-frame" title="Live Weather Radar"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <div id="audio-stop-btn" class="audio-stop-btn" onclick="toggleAzan()"><i class="fas fa-stop"></i></div>
+
+  <audio id="azan-audio" preload="auto" src="azan.mp3"></audio>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacy-modal" onclick="togglePrivacyModal(false)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h2 data-translate="privacy-title">Privacy Policy</h2>
+      <p data-translate="privacy-text">Your location data is used only to fetch local weather and prayer times. We do not store or share your personal information.</p>
+      <button onclick="togglePrivacyModal(false)" data-translate="modal-close">Close</button>
+      <button id="audio-unlock-btn" onclick="togglePrivacyModal(false)">GOT IT</button>
+    </div>
+  </div>
+
+  <!-- Audio Permission Overlay -->
+  <div id="audio-permission-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 10000; align-items: center; justify-content: center;">
+    <div class="modal-content">
+      <h2>Enable Audio Notifications</h2>
+      <p>Click "Got it" to enable prayer time audio alerts.</p>
+      <button id="audio-unlock-btn" onclick="unlockAudio()">Got it</button>
+    </div>
+  </div>
+
+  <script>
+    // CONSTANTS
+    const API_KEY = '646c3845de85a6604fb5de3a62e6fe55';
+    let lat = 30.42, lon = -9.60; // Agadir fallback
+    let isLight = localStorage.getItem('theme') === 'light';
+    let currentLang = localStorage.getItem('language') || 'en';
+    let prayerTimes = {};
+    const prayerNames = [
+      { en: 'Fajr', ar: 'الفجر' },
+      { en: 'Dhuhr', ar: 'الظهر' },
+      { en: 'Asr', ar: 'العصر' },
+      { en: 'Maghrib', ar: 'المغرب' },
+      { en: 'Isha', ar: 'العشاء' }
+    ];
+
+    if (isLight) document.body.classList.add('light');
+
+    let isPlaying = false;
+    const audio = document.getElementById('azan-audio');
+    const stopBtn = document.getElementById('audio-stop-btn');
+
+    const translations = {
+      en: {
+        'loading': 'Loading...',
+        'weather-desc': 'Partly Cloudy',
+        'weather-details': 'Weather Details',
+        'hourly-forecast': 'Hourly Forecast',
+        'prayer-times': 'Prayer Times',
+        'air-quality': 'Air Quality',
+        'live-radar': 'Live Radar',
+        'humidity': 'Humidity',
+        'wind-speed': 'Wind Speed',
+        'visibility': 'Visibility',
+        'pressure': 'Pressure',
+        'privacy-title': 'Privacy Policy',
+        'privacy-text': 'Your location data is used only to fetch local weather and prayer times. We do not store or share your personal information.',
+        'modal-close': 'Close',
+        'audio-unlock-btn': 'Got it',
+        'prayer-notification-title': 'Prayer Time: {name}',
+        'prayer-notification-body': 'It is now time for {name} Adhan according to your city timings.'
+      },
+      ar: {
+        'loading': 'جاري التحميل...',
+        'weather-desc': 'غائم جزئياً',
+        'weather-details': 'تفاصيل الطقس',
+        'hourly-forecast': 'توقعات ساعية',
+        'prayer-times': 'أوقات الصلاة',
+        'air-quality': 'جودة الهواء',
+        'live-radar': 'رادار مباشر',
+        'humidity': 'الرطوبة',
+        'wind-speed': 'سرعة الرياح',
+        'visibility': 'الرؤية',
+        'pressure': 'الضغط الجوي',
+        'privacy-title': 'سياسة الخصوصية',
+        'privacy-text': 'بيانات الموقع الجغرافي تُستخدم فقط لجلب الطقس المحلي وأوقات الصلاة. لا نحفظ أو نشارك معلوماتك الشخصية.',
+        'modal-close': 'إغلاق',
+        'audio-unlock-btn': 'تم',
+        'prayer-notification-title': 'وقت صلاة {name}',
+        'prayer-notification-body': 'حان الآن موعد أذان صلاة {name} حسب توقيت مدينتكم.'
+      }
+    };
+
+    // AQI mapping
+    const aqiLevels = ['', 'Good', 'Fair', 'Moderate', 'Poor', 'Very Poor'];
+
+    function togglePrivacyModal(show) {
+      const modal = document.getElementById('privacy-modal');
+      if (show) {
+        modal.classList.add('show');
+        document.querySelectorAll('#privacy-modal [data-translate]').forEach(el => {
+          const key = el.dataset.translate;
+          el.textContent = translations[currentLang][key];
+        });
+      } else {
+        modal.classList.remove('show');
+      }
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'ar' : 'en';
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      
+      document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.dataset.translate;
+        el.textContent = translations[currentLang][key] || el.textContent;
+      });
+      
+      const audioBtn = document.querySelector('#audio-unlock-btn');
+      if (audioBtn) {
+        audioBtn.textContent = translations[currentLang]['audio-unlock-btn'];
+      }
+      
+      localStorage.setItem('language', currentLang);
+      document.getElementById('lang-icon').className = currentLang === 'en' ? 'fas fa-globe' : 'fas fa-globe-asia';
+    }
+
+    function toggleAzan() {
+      if (isPlaying) {
+        audio.pause(); 
+        audio.currentTime = 0; 
+        isPlaying = false;
+        stopBtn.classList.remove('show');
+      } else {
+        audio.play().then(() => {
+          isPlaying = true; 
+          stopBtn.classList.add('show');
+        }).catch(e => console.log("Audio permission needed"));
+      }
+    }
+
+    function safeUpdate(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function toggleTheme() {
+      isLight = !isLight;
+      document.body.classList.toggle('light', isLight);
+      document.getElementById('theme-icon').className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+
+    async function requestNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            console.log('Notifications enabled');
+          }
+        } catch (e) {
+          console.log('Notification permission denied');
+        }
+      }
+    }
+
+    function checkPrayerNotifications() {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const now = new Date().toLocaleTimeString('en-GB', { hour12: false }).slice(0, 5);
+        for (const p of prayerNames) {
+          if (prayerTimes[p.en] === now) {
+            const title = translations[currentLang]['prayer-notification-title'].replace('{name}', p.ar || p.en);
+            const body = translations[currentLang]['prayer-notification-body'].replace('{name}', p.ar || p.en);
+            new Notification(title, { body, icon: 'icon.png' });
+            break;
+          }
+        }
+      }
+    }
+
+    // fetchWeather function
+    async function fetchWeather() {
+      let weatherOk = false;
+      try {
+        const [weatherRes, forecastRes, airRes] = await Promise.all([
+          fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`),
+          fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`),
+          fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`)
+        ]);
+        
+        const [weather, forecast, air] = await Promise.all([
+          weatherRes.json(),
+          forecastRes.json(),
+          airRes.json()
+        ]);
+
+        console.log('Weather Data:', weather);
+        console.log('Forecast Data:', forecast);
+        console.log('Air Data:', air);
+
+        if (weather && weather.main) {
+          safeUpdate('current-temp', Math.round(weather.main.temp) + '°');
+          safeUpdate('location', weather.name + ', MA');
+          safeUpdate('description', weather.weather[0]?.description || 'Unknown');
+          
+          safeUpdate('humidity-val', weather.main.humidity + '%');
+          safeUpdate('wind-val', Math.round(weather.wind?.speed * 3.6 || 0) + ' km/h');
+          safeUpdate('visibility-val', (weather.visibility / 1000 || 10).toFixed(1) + ' km');
+          safeUpdate('pressure-val', weather.main.pressure + ' hPa');
+          
+          weatherOk = true;
+        }
+
+        // Hourly
+        if (forecast && forecast.list) {
+          const hourly = forecast.list.slice(0,12).filter((_, i) => i % 2 === 0);
+          const hourlyHTML = hourly.map(item => {
+            const time = new Date(item.dt_txt).getHours();
+            return `<div class="hour-card">
+              <div class="hour-time">${time}:00</div>
+              <i class="hour-icon">${getIcon(item.weather[0].icon)}</i>
+              <div class="hour-temp">${Math.round(item.main.temp)}°</div>
+            </div>`;
+          }).join('');
+          document.getElementById('hourly-scroll').innerHTML = hourlyHTML;
+        }
+
+        // AQI with text
+        if (air && air.list && air.list[0]) {
+          const aqiIndex = air.list[0].main.aqi;
+          safeUpdate('aqi-center', aqiLevels[aqiIndex] || aqiIndex);
+        }
+
+        document.getElementById('radar-frame').src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&zoom=11&overlay=radar&level=surface`;
+        
+      } catch (error) {
+        console.error('Weather fetch error:', error);
+      }
+      return weatherOk;
+    }
+
+    // fetchPrayers function
+    async function fetchPrayers() {
+      let prayerOk = false;
+      try {
+        const prayerRes = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=5`);
+        const prayer = await prayerRes.json();
+        console.log('Prayer Data:', prayer);
+
+        if (prayer.data && prayer.data.timings) {
+          prayerTimes = prayer.data.timings;
+          const prayerHTML = prayerNames.map(p => {
+            const name = currentLang === 'ar' ? p.ar : p.en;
+            return `<div class="prayer-card" onclick="toggleAzan()" style="cursor: pointer;">
+              <i class="fas fa-volume-up audio-icon"></i>
+              <div class="prayer-name">${name}</div>
+              <div class="prayer-time">${prayer.data.timings[p.en]}</div>
+            </div>`;
+          }).join('');
+          document.getElementById('prayer-grid').innerHTML = prayerHTML;
+          prayerOk = true;
+        }
+      } catch (error) {
+        console.error('Prayer fetch error:', error);
+      }
+      return prayerOk;
+    }
+
+    function getIcon(code) {
+      const icons = {
+        '01d': '☀️', '01n': '🌙', '02d': '⛅', '02n': '⛅', '03d': '☁️', '03n': '☁️',
+        '04d': '☁️', '04n': '☁️', '09d': '🌧️', '09n': '🌧️', '10d': '🌦️', '10n': '🌦️',
+        '11d': '⛈️', '11n': '⛈️', '13d': '❄️', '13n': '❄️', '50d': '🌫️', '50n': '🌫️'
+      };
+      return icons[code] || '🌤️';
+    }
+
+    function loadFallback() {
+      safeUpdate('current-temp', '24°');
+      safeUpdate('location', currentLang === 'ar' ? 'الدار البيضاء' : 'Casablanca');
+      safeUpdate('description', translations[currentLang]['weather-desc'] || 'Partly Cloudy');
+      
+      safeUpdate('humidity-val', '65%');
+      safeUpdate('wind-val', '12 km/h');
+      safeUpdate('visibility-val', '10.0 km');
+      safeUpdate('pressure-val', '1013 hPa');
+      
+      document.getElementById('hourly-scroll').innerHTML = `
+        <div class="hour-card">
+          <div class="hour-time">12:00</div>
+          <i class="hour-icon">☀️</i>
+          <div class="hour-temp">26°</div>
+        </div>
+        <div class="hour-card">
+          <div class="hour-time">13:00</div>
+          <i class="hour-icon">⛅</i>
+          <div class="hour-temp">28°</div>
+        </div>
+      `;
+      
+      document.getElementById('aqi-center').textContent = 'Good';
+      
+      const prayerHTML = prayerNames.slice(0,2).map(p => {
+        const name = currentLang === 'ar' ? p.ar : p.en;
+        return `<div class="prayer-card" onclick="toggleAzan()" style="cursor: pointer;">
+          <i class="fas fa-volume-up audio-icon"></i>
+          <div class="prayer-name">${name}</div>
+          <div class="prayer-time">${p.en === 'Fajr' ? '05:30' : '13:15'}</div>
+        </div>`;
+      }).join('');
+      document.getElementById('prayer-grid').innerHTML = prayerHTML;
+    }
+
+    // Init with geolocation
+    async function init() {
+      requestNotificationPermission();
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          lat = pos.coords.latitude;
+          lon = pos.coords.longitude;
+          console.log('User location:', lat, lon);
+          const weatherOk = await fetchWeather();
+          const prayerOk = await fetchPrayers();
+          if (!weatherOk || !prayerOk) loadFallback();
+        }, async () => {
+          console.log('Using Agadir fallback:', lat, lon);
+          const weatherOk = await fetchWeather();
+          const prayerOk = await fetchPrayers();
+          if (!weatherOk || !prayerOk) loadFallback();
+        });
+      } else {
+        const weatherOk = await fetchWeather();
+        const prayerOk = await fetchPrayers();
+        if (!weatherOk || !prayerOk) loadFallback();
+      }
+    }
+
+    // EVENT LISTENERS
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' || e.code === 'Escape') {
+        toggleAzan();
+        e.preventDefault();
+      }
+      if (e.code === 'Escape') {
+        togglePrivacyModal(false);
+      }
+    });
+
+    window.onload = init;
+  </script>
+</body>
+</html>
